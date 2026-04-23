@@ -1,0 +1,11 @@
+# railway.toml — Configuración para Railway.app
+[build]
+builder = "nixpacks"
+
+[deploy]
+startCommand = "npm start"
+restartPolicyType = "on_failure"
+restartPolicyMaxRetries = 3
+
+[[services]]
+name = "finpro-api"
