@@ -6,6 +6,7 @@ builder = "nixpacks"
 startCommand = "npm start"
 restartPolicyType = "on_failure"
 restartPolicyMaxRetries = 3
+rootDir = "finpro-backend"  
 
 [[services]]
 name = "finpro-api"
