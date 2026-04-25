@@ -128,3 +128,98 @@ tbody tr:hover td { background: rgba(79,142,247,.04); }
 .badge-blue   { background: var(--blue-dim);   color: var(--blue); }
 .badge-purple { background: rgba(124,111,247,.15); color: var(--indigo); }
 .badge-gray   { background: rgba(74,88,128,.2); color: var(--text2); }
+
+/* ── RESPONSIVE MOBILE ───────────────────────────────────── */
+/* Breakpoint: móvil = menos de 768px */
+
+/* En móvil las tablas hacen scroll horizontal */
+@media (max-width: 768px) {
+  /* Tipografía base más grande para touch */
+  body { font-size: 15px; }
+
+  /* Inputs más grandes para dedos */
+  input, select, textarea {
+    padding: 12px 14px;
+    font-size: 15px;
+  }
+
+  /* Tablas: scroll horizontal en contenedor */
+  .table-wrap {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+  .table-wrap table { min-width: 600px; }
+
+  /* Grids de KPI: 2 columnas en móvil */
+  .kpi-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  /* Ocultar columnas menos importantes en tablas móvil */
+  .col-hide-mobile { display: none !important; }
+
+  /* Cards sin padding lateral en móvil */
+  .mobile-full {
+    border-radius: 0 !important;
+    border-left: none !important;
+    border-right: none !important;
+  }
+}
+
+/* Bottom nav — solo visible en móvil */
+.bottom-nav {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .bottom-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 64px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    z-index: 100;
+    padding: 0 4px;
+    padding-bottom: env(safe-area-inset-bottom); /* iPhone notch */
+  }
+
+  /* Empuja el contenido sobre el bottom nav */
+  .mobile-main-content {
+    padding-bottom: 80px !important;
+  }
+}
+
+/* Sidebar — oculto en móvil */
+@media (max-width: 768px) {
+  .desktop-sidebar { display: none !important; }
+}
+
+/* Topbar mobile */
+@media (max-width: 768px) {
+  .topbar-desktop-items { display: none !important; }
+  .topbar { padding: 0 16px !important; }
+}
+
+/* Modal full screen en móvil */
+@media (max-width: 768px) {
+  .modal-inner {
+    max-width: 100% !important;
+    width: 100% !important;
+    max-height: 95vh !important;
+    border-radius: var(--r-xl) var(--r-xl) 0 0 !important;
+    margin-top: auto !important;
+  }
+  .modal-backdrop {
+    align-items: flex-end !important;
+  }
+}
+
+/* Page padding en móvil */
+@media (max-width: 768px) {
+  .page-content {
+    padding: 16px !important;
+  }
+}

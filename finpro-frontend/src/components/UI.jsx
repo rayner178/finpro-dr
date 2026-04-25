@@ -60,6 +60,8 @@ export function Card({ children, style, pad = true }) {
 
 // ── Modal ─────────────────────────────────────────────────
 export function Modal({ open, onClose, title, children, width = 520, footer }) {
+  const isMobile = typeof window !== 'undefined' && window.innerWidth < 768
+
   useEffect(() => {
     const handler = (e) => { if (e.key === 'Escape') onClose() }
     if (open) document.addEventListener('keydown', handler)
@@ -68,23 +70,36 @@ export function Modal({ open, onClose, title, children, width = 520, footer }) {
 
   if (!open) return null
   return (
-    <div style={{
+    <div className="modal-backdrop" style={{
       position: 'fixed', inset: 0, background: 'rgba(0,0,0,.72)',
-      display: 'flex', alignItems: 'center', justifyContent: 'center',
-      zIndex: 1000, padding: '16px', backdropFilter: 'blur(4px)', animation: 'fadeIn .2s ease'
+      display: 'flex',
+      alignItems: isMobile ? 'flex-end' : 'center',
+      justifyContent: 'center',
+      zIndex: 1000,
+      padding: isMobile ? '0' : '16px',
+      backdropFilter: 'blur(4px)', animation: 'fadeIn .2s ease'
     }} onClick={e => { if (e.target === e.currentTarget) onClose() }}>
-      <div style={{
+      <div className="modal-inner" style={{
         background: 'var(--surface)', border: '1px solid var(--border2)',
-        borderRadius: 'var(--r-xl)', width: '100%', maxWidth: width,
-        maxHeight: '90vh', display: 'flex', flexDirection: 'column',
-        animation: 'fadeUp .25s ease', boxShadow: '0 25px 80px rgba(0,0,0,.6)'
+        borderRadius: isMobile ? 'var(--r-xl) var(--r-xl) 0 0' : 'var(--r-xl)',
+        width: '100%', maxWidth: isMobile ? '100%' : width,
+        maxHeight: isMobile ? '92vh' : '90vh',
+        display: 'flex', flexDirection: 'column',
+        animation: 'fadeUp .25s ease', boxShadow: '0 25px 80px rgba(0,0,0,.6)',
+        paddingBottom: isMobile ? 'env(safe-area-inset-bottom)' : undefined,
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '18px 24px', borderBottom: '1px solid var(--border)' }}>
+        {/* Handle bar en móvil */}
+        {isMobile && (
+          <div style={{ display: 'flex', justifyContent: 'center', padding: '12px 0 4px' }}>
+            <div style={{ width: 36, height: 4, borderRadius: 2, background: 'var(--border2)' }} />
+          </div>
+        )}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: isMobile ? '10px 20px 14px' : '18px 24px', borderBottom: '1px solid var(--border)' }}>
           <h3 style={{ fontFamily: 'var(--font-head)', fontSize: '16px', fontWeight: 700 }}>{title}</h3>
           <button onClick={onClose} style={{ background: 'none', border: 'none', color: 'var(--text2)', fontSize: '22px', cursor: 'pointer', lineHeight: 1, padding: '0 4px' }}>×</button>
         </div>
-        <div style={{ padding: '24px', overflow: 'auto', flex: 1 }}>{children}</div>
-        {footer && <div style={{ padding: '16px 24px', borderTop: '1px solid var(--border)', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>{footer}</div>}
+        <div style={{ padding: isMobile ? '16px 20px' : '24px', overflow: 'auto', flex: 1 }}>{children}</div>
+        {footer && <div style={{ padding: isMobile ? '12px 20px' : '16px 24px', borderTop: '1px solid var(--border)', display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>{footer}</div>}
       </div>
     </div>
   )
@@ -290,7 +305,10 @@ export function Section({ title, action, children, pad = true }) {
           {action}
         </div>
       )}
-      <div style={pad ? { padding: '0' } : undefined}>{children}</div>
+      {/* Wrap table in scrollable div for mobile */}
+      <div style={{ overflowX: 'auto', WebkitOverflowScrolling: 'touch' }}>
+        {children}
+      </div>
     </Card>
   )
 }
