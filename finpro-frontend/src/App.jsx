@@ -15,6 +15,7 @@ import Mora      from './pages/Mora'
 import Caja      from './pages/Caja'
 import Reportes  from './pages/Reportes'
 import Usuarios  from './pages/Usuarios'
+import Perfil    from './pages/Perfil'
 
 // ── Protected route ───────────────────────────────────────
 function Protected({ children }) {
@@ -68,7 +69,6 @@ function ApiStatus() {
   const [status, setStatus] = useState('checking')
 
   useEffect(() => {
-    // Use the api client base URL, not raw fetch, so it goes through the same proxy
     const base = import.meta.env.VITE_API_URL || '/api'
     fetch(`${base}/health`)
       .then(r => r.json())
@@ -97,14 +97,13 @@ function Shell() {
   const [moraCnt,   setMoraCnt]   = useState(0)
   const location = useLocation()
 
-  // Poll mora count every 60 s using the authenticated API client
   useEffect(() => {
     let cancelled = false
     const poll = async () => {
       try {
         const data = await moraApi.listar()
         if (!cancelled) setMoraCnt(Array.isArray(data) ? data.length : 0)
-      } catch { /* silently ignore — token errors trigger global logout */ }
+      } catch { /* silently ignore */ }
     }
     poll()
     const id = setInterval(poll, 60_000)
@@ -149,7 +148,8 @@ function Shell() {
           {collapsed ? (
             [['/', '⬡'], ['clientes', '◉'], ['prestamos', '◎'], ['cobros', '◇'],
              ['mora', '⚠'], ['caja', '▣'], ['reportes', '▤'],
-             ...((isAdmin || isSupervisor) ? [['usuarios', '◈']] : [])
+             ...((isAdmin || isSupervisor) ? [['usuarios', '◈']] : []),
+             ['perfil', '👤']
             ].map(([path, icon]) => (
               <NavLink key={path} to={path === '/' ? '/' : `/${path}`} title={path}
                 style={({ isActive }) => ({
@@ -174,6 +174,7 @@ function Shell() {
               <NavItem to="/reportes"  icon="▤" label="Reportes" />
               {(isAdmin || isSupervisor) && <NavItem to="/usuarios" icon="◈" label="Usuarios" />}
               <div style={{ height: '1px', background: 'var(--border)', margin: '12px 4px' }} />
+              <NavItem to="/perfil"    icon="👤" label="Mi perfil" />
               <ApiStatus />
             </>
           )}
@@ -242,7 +243,7 @@ function Shell() {
           </div>
         </header>
 
-        {/* Page content — each page wrapped in its own ErrorBoundary */}
+        {/* Páginas */}
         <main style={{ flex: 1, overflow: 'auto', padding: '28px' }}>
           <Routes>
             <Route path="/"          element={<ErrorBoundary key="dashboard"><Dashboard /></ErrorBoundary>} />
@@ -253,6 +254,7 @@ function Shell() {
             <Route path="/caja"      element={<ErrorBoundary key="caja"><Caja /></ErrorBoundary>} />
             <Route path="/reportes"  element={<ErrorBoundary key="reportes"><Reportes /></ErrorBoundary>} />
             <Route path="/usuarios"  element={<ErrorBoundary key="usuarios"><Usuarios /></ErrorBoundary>} />
+            <Route path="/perfil"    element={<ErrorBoundary key="perfil"><Perfil /></ErrorBoundary>} />
             <Route path="*"          element={<Navigate to="/" replace />} />
           </Routes>
         </main>
